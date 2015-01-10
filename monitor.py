@@ -6,7 +6,7 @@ import ConfigParser
 from time import strftime
 
 config = ConfigParser.ConfigParser()
-config.read('bot.cfg')
+config.read('bittrex.cfg')
 
 exchange = Bittrex(config.get('Bittrex', 'key'),config.get('Bittrex', 'secret'))
 
@@ -40,23 +40,25 @@ while True:
 
     line = line + 2
     print(term.move(line,1) + "Orders:            Last       Bid        Ask")
-    line = line + 1 
-    for market in exchange.get_markets()['result']:
-        if market['IsActive']:
-            name = market['MarketName']
-            orders = exchange.get_open_orders(name)['result']
-            if len(orders) != 0:
-                ticker = exchange.get_ticker(name)['result']
-                print(term.move(line, 4) + name)
-                print(term.move(line, 15) + ": %s (%0.8f %0.8f %0.8f)" % 
-                    (len(orders),ticker['Last'],ticker['Bid'],ticker['Ask']))
+    line = line + 1
+    orders = exchange.get_open_orders("")['result']
+    open_markets = {} 
+    for x in orders:
+        open_markets[x['Exchange']] = x['Exchange']
+    for name in open_markets:
+        orders = exchange.get_open_orders(name)['result']
+        if len(orders) != 0:
+            ticker = exchange.get_ticker(name)['result']
+            print(term.move(line, 4) + name)
+            print(term.move(line, 15) + ": %s (%0.8f %0.8f %0.8f)" % 
+                (len(orders),ticker['Last'],ticker['Bid'],ticker['Ask']))
+            line = line + 1
+            for order in orders:
+                print(term.move(line, 8) + "%s %0.2f %0.8f" % 
+                    (order_type[order['OrderType']],
+                     order['QuantityRemaining'],
+                     order['Limit']))
                 line = line + 1
-                for order in orders:
-                    print(term.move(line, 8) + "%s %0.2f %0.8f" % 
-                        (order_type[order['OrderType']],
-                         order['QuantityRemaining'],
-                         order['Limit']))
-                    line = line + 1
     line = line + 1
     print(term.move(line,1) + "Updated: " + strftime("%Y-%m-%d %H:%M:%S"))
     time.sleep(60)
