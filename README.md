@@ -7,5 +7,5 @@ Install dependencies
 ``pip install blessed bittrex ConfigParser``
 
 Donations are welcome
-* DOGE: D9VLzP9vBacsY8CfrSotyj32sY8FPgBdKt
+* DOGE: DQ415bUNHfAnVfNASty4rAcKr9aJXxD4e7 
 * BTC: 18octCdNZT3QXjkZHBP7nQ3bCpg4iP4Qk7
